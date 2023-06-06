@@ -9,6 +9,6 @@ const AUTH_PORT = 5051;
 
 authServer.listen(AUTH_PORT, () => {
   if (process.env.NODE_ENV === "development") {
-    console.log(`Auth Server: https://localhost:${AUTH_PORT}`);
+    console.log(`Auth Server: http://localhost:${AUTH_PORT}`);
   }
 });

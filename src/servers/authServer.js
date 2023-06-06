@@ -2,9 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const authServer = express();
 const jwt = require("jsonwebtoken");
-var axios = require("axios");
-const databaseModule = require("../customModules/databaseModule");
-const { database } = require("../customModules/databaseModule");
+const database = require("../customModules/database");
 
 authServer.use(express.json());
 authServer.use(
@@ -31,17 +29,20 @@ function generateAccessToken(user) {
 // validates user against database
 async function validateUser(username, password, collection) {
   // data request parameters
-  var data = [
+  var args = [
     {
       filter: {
         username: username,
         password: password,
       },
+      projection: {
+        password: 0,
+      },
     },
   ];
 
-  return await databaseModule
-    .database(collection, "findOne", data)
+  return await database
+    .query(collection, "findOne", args)
     .then((document) => {
       return document;
     })
@@ -53,101 +54,64 @@ async function validateUser(username, password, collection) {
 
 // validates user against database
 async function validateRefreshToken(token) {
-  // data request parameters
-  var data = JSON.stringify({
-    collection: "RefreshTokens",
-    database: "GreenGovanDatabase",
-    dataSource: "GreenGovanCluster",
-    filter: {
-      token: token,
+  var args = [
+    {
+      filter: {
+        token: token,
+      },
     },
-  });
+  ];
 
-  // request configuation
-  var config = {
-    method: "POST",
-    url: `${process.env.DATABASE_ENDPOINT}/action/findOne`,
-    headers: {
-      "Content-Type": "application/json",
-      "Access-Control-Request-Headers": "*",
-      "api-key": process.env.DATABASE_API_KEY,
-    },
-    data: data,
-  };
-
-  // find matching user in database
-  return await axios(config)
-    .then(function (response) {
-      return response.data.document;
+  return await database
+    .query("RefreshTokens", "findOne", args)
+    .then((document) => {
+      return document;
     })
-    .catch(function (error) {
-      console.log(error);
+    .catch((err) => {
+      console.warn(err);
       return null;
     });
 }
 
 // insert refresh token into database
 async function addRefreshToken(token) {
-  // data request parameters
-  var data = JSON.stringify({
-    collection: "RefreshTokens",
-    database: "GreenGovanDatabase",
-    dataSource: "GreenGovanCluster",
-    document: {
-      token: token,
-      createdAt: new Date(),
+  var args = [
+    {
+      document: {
+        token: token,
+        createdAt: new Date(),
+      },
     },
-  });
+  ];
 
-  // request configuation
-  var config = {
-    method: "POST",
-    url: `${process.env.DATABASE_ENDPOINT}/action/insertOne`,
-    headers: {
-      "Content-Type": "application/json",
-      "Access-Control-Request-Headers": "*",
-      "api-key": process.env.DATABASE_API_KEY,
-    },
-    data: data,
-  };
-
-  // send request to database api
-  axios(config).catch(function (error) {
-    console.warn(error);
-  });
+  return await database
+    .query("RefreshTokens", "insertOne", args)
+    .then((document) => {
+      return document;
+    })
+    .catch((err) => {
+      console.warn(err);
+      return null;
+    });
 }
 
 // remove refresh token from database
 async function removeRefreshToken(token) {
-  // data request parameters
-  var data = JSON.stringify({
-    collection: "RefreshTokens",
-    database: "GreenGovanDatabase",
-    dataSource: "GreenGovanCluster",
-    filter: {
-      token: token,
+  var args = [
+    {
+      filter: {
+        token: token,
+      },
     },
-  });
+  ];
 
-  // request configuation
-  var config = {
-    method: "POST",
-    url: `${process.env.DATABASE_ENDPOINT}/action/deleteOne`,
-    headers: {
-      "Content-Type": "application/json",
-      "Access-Control-Request-Headers": "*",
-      "api-key": process.env.DATABASE_API_KEY,
-    },
-    data: data,
-  };
-
-  // find matching user in database
-  return await axios(config)
-    .then(function (response) {
-      return response.data.document;
+  return await database
+    .query("RefreshTokens", "deleteOne", args)
+    .then((document) => {
+      return document;
     })
-    .catch(function (error) {
-      console.log(error);
+    .catch((err) => {
+      console.warn(err);
       return null;
     });
 }
@@ -164,10 +128,13 @@ authServer.get("/", (req, res) => {
 });
 
 // authenticate users
-authServer.post("/login/:collection", async (req, res) => {
+authServer.post("/login/:portal", async (req, res) => {
   const { username, password } = req.body;
 
-  let user = await validateUser(username, password, req.params.collection);
+  let collection =
+    req.params.portal.toLowerCase() === "client" ? "Clients" : "Users";
+
+  let user = await validateUser(username, password, collection);
 
   // send error message and appropriate status code to frontend if no user's account has both that username and password
   if (!user) {

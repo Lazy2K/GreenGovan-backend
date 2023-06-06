@@ -1,6 +1,6 @@
 var axios = require("axios");
 
-async function database(collection, action, args) {
+async function query(collection, action, args) {
   // Guard Clauses
   if (!Array.isArray(args)) {
     throw new Error("Args not passes as Array.");
@@ -38,4 +38,4 @@ async function database(collection, action, args) {
     });
 }
 
-module.exports = { database: database };
+module.exports = { query: query };
