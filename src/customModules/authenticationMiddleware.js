@@ -1,5 +1,4 @@
 const jwt = require("jsonwebtoken");
-const databaseModule = require("./databaseModule");
 
 // token authentication middleware (run for all requests to /api route)
 function authenticateAccessToken(req, res, next) {
