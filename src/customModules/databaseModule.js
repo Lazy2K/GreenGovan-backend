@@ -38,6 +38,6 @@ async function database(collection, action, args) {
   console.log(config.data);
 }
 
-database("Bitch", "Fuck", ags);
+database("Collectoin", "Action", ags);
 
 module.exports;
