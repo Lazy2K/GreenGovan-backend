@@ -1,24 +1,12 @@
 var axios = require("axios");
 
-var ags = [
-  {
-    filter: {
-      token: "hello",
-    },
-  },
-  {
-    documents: {
-      hello: "hello",
-    },
-  },
-];
-
 async function database(collection, action, args) {
-  // Guard clauses !
+  // Guard Clauses
   if (!Array.isArray(args)) {
-    return new Error("Args not passes as Array.");
+    throw new Error("Args not passes as Array.");
   }
 
+  // Database call config
   var config = {
     method: "POST",
     url: `${process.env.DATABASE_ENDPOINT}/action/${action}`,
@@ -34,11 +22,20 @@ async function database(collection, action, args) {
     },
   };
 
+  // Add arguments to database call
   args.forEach((element) => {
     Object.assign(config.data, element);
   });
+
+  // Execute database call
+  return await axios(config)
+    .then(function (response) {
+      return response.data.document;
+    })
+    .catch(function (error) {
+      console.warn(error);
+      return null;
+    });
 }
 
-database("A", "b", "c").catch((err) => console.log(err));
-
-module.exports;
+module.exports = { database: database };
