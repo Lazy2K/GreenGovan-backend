@@ -15,6 +15,9 @@ var ags = [
 
 async function database(collection, action, args) {
   // Guard clauses !
+  if (!Array.isArray(args)) {
+    return new Error("Args not passes as Array.");
+  }
 
   var config = {
     method: "POST",
@@ -34,10 +37,8 @@ async function database(collection, action, args) {
   args.forEach((element) => {
     Object.assign(config.data, element);
   });
-
-  console.log(config.data);
 }
 
-database("Collectoin", "Action", ags);
+database("A", "b", "c").catch((err) => console.log(err));
 
 module.exports;
