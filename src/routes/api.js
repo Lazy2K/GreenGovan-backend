@@ -7,8 +7,10 @@ const authMiddleware = require("../customModules/authenticationMiddleware");
 // router.use("/example", authMiddleware.authenticateAccessToken, exampleRoute);
 
 const earnRoute = require("../routes/api/earn");
+const redeemRoute = require("../routes/api/redeem");
 
 router.use("/earn", earnRoute);
+router.use("/redeem", redeemRoute);
 
 router.get("/", (req, res) => {
   var data = {

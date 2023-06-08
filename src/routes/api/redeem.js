@@ -26,8 +26,8 @@ router.post(
         filter: { _id: { $oid: req.body.userID } },
       },
       {
-        // Increment users points by points value
-        update: { $inc: { points: req.body.points } },
+        // Increment users points by negative points value
+        update: { $inc: { points: (req.body.points * -1) } },
       },
     ];
 
@@ -35,7 +35,7 @@ router.post(
     await database
       .query("Users", "updateOne", data)
       .then((document) => {
-        res.statusMessage = "Points added";
+        res.statusMessage = "Points deducted";
         return res.sendStatus(200);
       })
       .catch(() => {
