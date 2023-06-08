@@ -6,6 +6,10 @@ const authMiddleware = require("../customModules/authenticationMiddleware");
 
 // router.use("/example", authMiddleware.authenticateAccessToken, exampleRoute);
 
+const earnRoute = require("../routes/api/earn");
+
+router.use("/earn", earnRoute);
+
 router.get("/", (req, res) => {
   var data = {
     heading: "API functioning correctly.",
