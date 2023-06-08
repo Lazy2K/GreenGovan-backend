@@ -19,7 +19,7 @@ router.post(
     }
     var data = [
       {
-        filter: { id: req.body.userID },
+        filter: { _id: { $oid: req.body.userID } },
       },
       {
         update: { $inc: { points: req.body.points } },
