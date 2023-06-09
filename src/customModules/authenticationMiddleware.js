@@ -26,6 +26,23 @@ function authenticateAccessToken(req, res, next) {
   });
 }
 
+function authenticateAccessLevelTwo(req, res, next) {
+  if (req.user.accessLevel < 2) {
+    res.statusMessage = `${req.user.userID} is not permitted to access ${req.originalUrl}`;
+    return res.sendStatus(403);
+  }
+  next();
+}
+function authenticateAccessLevelThree(req, res, next) {
+  if (req.user.accessLevel < 3) {
+    res.statusMessage = `${req.user.userID} is not permitted to access ${req.originalUrl}`;
+    return res.sendStatus(403);
+  }
+  next();
+}
+
 module.exports = {
   authenticateAccessToken: authenticateAccessToken,
+  authenticateAccessLevelTwo: authenticateAccessLevelTwo,
+  authenticateAccessLevelThree: authenticateAccessLevelThree,
 };
