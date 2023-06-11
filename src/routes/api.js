@@ -2,12 +2,11 @@ const router = require("express").Router();
 const authMiddleware = require("../customModules/authenticationMiddleware");
 
 // api routes
-// const exampleRoute = require("../routes/api/exampleRoute");
+const pointsRoute = require("./api/points");
+const usersRoute = require("./api/users");
 
-// router.use("/example", authMiddleware.authenticateAccessToken, exampleRoute);
-
-const pointsRoute = require("../routes/api/points");
-router.use("/points", pointsRoute);
+router.use("/points", authMiddleware.authenticateAccessToken, pointsRoute);
+router.use("/users", authMiddleware.authenticateAccessToken, usersRoute);
 
 router.get("/", (req, res) => {
   var data = {

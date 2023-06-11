@@ -27,13 +27,13 @@ router.post(
       },
       {
         // Increment users points by negative points value
-        update: { $inc: { points: (req.body.points * -1) } },
+        update: { $inc: { points: req.body.points * -1 } },
       },
     ];
 
     // Call to database
     await database
-      .query("Users", "updateOne", data)
+      .query("Community", "updateOne", data)
       .then((document) => {
         res.statusMessage = "Points deducted";
         return res.sendStatus(200);

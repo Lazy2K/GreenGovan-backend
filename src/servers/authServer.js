@@ -13,17 +13,9 @@ authServer.use(
 
 // generates new access token
 function generateAccessToken(user) {
-  return jwt.sign(
-    {
-      username: user.username,
-      firstname: user.firstname,
-      surname: user.surname,
-    },
-    process.env.ACCESS_TOKEN_SECRET_KEY,
-    {
-      expiresIn: "5m",
-    }
-  );
+  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET_KEY, {
+    expiresIn: "60m",
+  });
 }
 
 // validates user against database
@@ -44,6 +36,8 @@ async function validateUser(username, password, collection) {
   return await database
     .query(collection, "findOne", args)
     .then((document) => {
+      document.userID = document._id;
+      delete document._id;
       return document;
     })
     .catch((err) => {
@@ -132,7 +126,7 @@ authServer.post("/login/:portal", async (req, res) => {
   const { username, password } = req.body;
 
   let collection =
-    req.params.portal.toLowerCase() === "client" ? "Clients" : "Users";
+    req.params.portal.toLowerCase() === "client" ? "Clients" : "Community";
 
   let user = await validateUser(username, password, collection);
 
@@ -143,17 +137,11 @@ authServer.post("/login/:portal", async (req, res) => {
     return;
   }
 
-  let userData = {
-    username: user.username,
-    firstname: user.firstname,
-    surname: user.surname,
-  };
-
-  console.log(`${userData.username} is logged in`); //testing
+  console.log(`${user.username} is logged in`); //testing
 
   // signs a new token for that userID, using the secret key stored in the eviromnent variable - includes their accessLevel
-  const accessToken = generateAccessToken(userData);
-  const refreshToken = jwt.sign(userData, process.env.REFRESH_TOKEN_SECRET_KEY);
+  const accessToken = generateAccessToken(user);
+  const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET_KEY);
 
   addRefreshToken(refreshToken);
 
@@ -167,7 +155,7 @@ authServer.post("/login/:portal", async (req, res) => {
 authServer.delete("/logout", async (req, res) => {
   const refreshToken = req.body.token;
 
-  // if not refresh token provided
+  // if no refresh token provided
   if (refreshToken == null) return res.sendStatus(401);
 
   // validates refresh token
@@ -217,7 +205,9 @@ authServer.post("/token", async (req, res) => {
       // if token is invalid return error
       if (err) return res.sendStatus(403);
 
-      console.log(`Refreshing token for user: ${user.firstname}`); //debugging
+      console.log(
+        `Refreshing token for user: ${user.firstname || user.username}`
+      ); //debugging
 
       // otherwise generate a new access token
       const accessToken = generateAccessToken(user);
