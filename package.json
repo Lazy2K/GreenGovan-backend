@@ -4,7 +4,7 @@
   "description": "",
   "main": "App.js",
   "scripts": {
-    "start": "nodemon app"
+    "start": "node app"
   },
   "author": "Jake Hallam",
   "license": "ISC",
