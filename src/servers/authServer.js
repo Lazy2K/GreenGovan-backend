@@ -110,6 +110,41 @@ async function removeRefreshToken(token) {
     });
 }
 
+async function registerUser(username, password, collection) {
+  var findArgs = [
+    {
+      filter: {
+        username: username,
+      },
+    },
+  ];
+  var insertArgs = [
+    {
+      document: {
+        username: username,
+        password: password,
+        points: 0,
+        accessLevel: 1,
+      },
+    },
+  ];
+  return await database
+    .query(collection, "findOne", findArgs)
+    .then((document) => {
+      if (document) {
+        return null;
+      }
+      return database
+        .query(collection, "insertOne", insertArgs)
+        .then((document) => {
+          return document;
+        })
+        .catch(() => {
+          throw new Error("Error creating database user");
+        });
+    });
+}
+
 //ROUTES
 
 // default
@@ -119,6 +154,28 @@ authServer.get("/", (req, res) => {
     route: "/",
   };
   res.json(data);
+});
+
+// create users
+authServer.post("/register/:portal", async (req, res) => {
+  const { username, password } = req.body;
+
+  let collection =
+    req.params.portal.toLowerCase() === "client" ? "Clients" : "Community";
+
+  await registerUser(username, password, collection)
+    .then((response) => {
+      if (response === null) {
+        res.statusMessage = "Username alrady taken";
+        return res.sendStatus(400);
+      }
+      res.statusMessage = `${collection} user created`;
+      return res.sendStatus(200);
+    })
+    .catch((error) => {
+      res.statusMessage = `Error creating ${collection} user: ${error}`;
+      return res.sendStatus(200);
+    });
 });
 
 // authenticate users
