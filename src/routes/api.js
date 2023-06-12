@@ -10,7 +10,7 @@ router.use("/users", authMiddleware.authenticateAccessToken, usersRoute);
 
 router.get("/", (req, res) => {
   var data = {
-    heading: "API functioning correctly.",
+    heading: "API functioning correctly :)",
     route: "/api",
   };
   res.json(data);
