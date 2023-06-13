@@ -5,7 +5,7 @@ const apiServer = express();
 apiServer.use(express.json());
 apiServer.use(
   cors({
-    origin: "http://localhost:19006",
+    origin: "https://6488ae95304b69007f07e988--greengovan.netlify.app/",
   })
 );
 
