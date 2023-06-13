@@ -38,5 +38,28 @@ router.post("/data", async (req, res) => {
     });
 });
 
+router.get("/data", async (req, res) => {
+  // Database query arguments
+  var data = [
+    {
+      // Filter user documents by object ID
+      filter: { _id: { $oid: req.user.userID } },
+    },
+    {
+      // Increment users points by points value
+      projection: { scannerBuffer: 1 },
+    },
+  ];
+  await database
+    .query("Clients", "find", data)
+    .then((document) => {
+      return res.json({ data: document });
+    })
+    .catch(() => {
+      res.statusMessage = "Points failed to update";
+      return res.sendStatus(500);
+    });
+});
+
 // Export route
 module.exports = router;
