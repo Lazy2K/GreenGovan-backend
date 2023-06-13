@@ -1,18 +1,15 @@
 const router = require("express").Router();
 const database = require("../../customModules/database");
 
-router.post("/id", async (req, res) => {
+router.post("/data", async (req, res) => {
   // Guard clauses
   if (!req.body.clientID) {
     res.statusMessage = "No ID given";
     return res.sendStatus(400);
   }
-  if (!req.body.terminalID) {
-    res.statusMessage = "No ID given";
-    return res.sendStatus(400);
-  }
-  if (!req.body.id) {
-    res.statusMessage = "No ID given";
+
+  if (!req.body.data) {
+    res.statusMessage = "No scanner data given";
     return res.sendStatus(400);
   }
 
@@ -24,13 +21,13 @@ router.post("/id", async (req, res) => {
     },
     {
       // Increment users points by points value
-      update: { $inc: { points: req.body.points } },
+      update: { $set: { scannerBuffer: req.body.data } },
     },
   ];
 
   // Call to database
   await database
-    .query("Clients", "insertOne", data)
+    .query("Clients", "updateOne", data)
     .then((document) => {
       res.statusMessage = "Points added";
       return res.sendStatus(200);
