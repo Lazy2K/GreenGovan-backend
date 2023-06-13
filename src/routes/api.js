@@ -12,7 +12,7 @@ router.use("/scanner", authMiddleware.authenticateAccessToken, scannerRoute);
 
 router.get("/", (req, res) => {
   var data = {
-    heading: "API Version 2 - test",
+    heading: "API Version 3",
     route: "/api",
   };
   res.json(data);
