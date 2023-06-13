@@ -49,8 +49,7 @@ router.get("/data", async (req, res) => {
   await database
     .query("Clients", "findOne", data)
     .then((document) => {
-      console.log(document);
-      return res.json(document);
+      return res.json(document.scannedBuffer);
     })
     .catch(() => {
       res.statusMessage = "Points failed to update";
