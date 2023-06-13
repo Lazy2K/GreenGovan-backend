@@ -3,7 +3,7 @@ const database = require("../../customModules/database");
 
 router.post("/data", async (req, res) => {
   // Guard clauses
-  if (!req.body.clientID) {
+  if (!req.user.userID) {
     res.statusMessage = "No ID given";
     return res.sendStatus(400);
   }
