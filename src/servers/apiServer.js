@@ -3,7 +3,11 @@ const cors = require("cors");
 const apiServer = express();
 
 apiServer.use(express.json());
-apiServer.use(cors());
+apiServer.use(
+  cors({
+    origin: "http://localhost:19006",
+  })
+);
 
 const apiRoute = require("../routes/api");
 

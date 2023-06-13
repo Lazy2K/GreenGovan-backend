@@ -20,7 +20,6 @@ function authenticateAccessToken(req, res, next) {
       console.log("Request made with invalid token");
       return res.sendStatus(403);
     }
-    console.log(user);
     console.log(`Authorised ${user.userID} for ${req.originalUrl}`); //debugging
     req.user = user;
     next();
