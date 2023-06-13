@@ -17,7 +17,7 @@ router.post("/data", async (req, res) => {
   var data = [
     {
       // Filter user documents by object ID
-      filter: { _id: { $oid: req.body.userID } },
+      filter: { _id: { $oid: req.user.userID } },
     },
     {
       // Increment users points by points value
