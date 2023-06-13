@@ -45,10 +45,10 @@ router.get("/data", async (req, res) => {
       // Filter user documents by object ID
       filter: { _id: { $oid: req.user.userID } },
     },
-    {
-      // Increment users points by points value
-      projection: { scannerBuffer: 1 },
-    },
+    // {
+    //   // Increment users points by points value
+    //   projection: { scannerBuffer: 1 },
+    // },
   ];
   await database
     .query("Clients", "find", data)
