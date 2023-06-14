@@ -21,7 +21,7 @@ router.post("/data", async (req, res) => {
     },
     {
       // Increment users points by points value
-      update: { $set: { scannerBuffer: JSON.stringify(req.body.data) } },
+      update: { $set: { scannerBuffer: req.body.data } },
     },
   ];
 
