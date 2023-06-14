@@ -1,13 +1,7 @@
 const express = require("express");
-const cors = require("cors");
 const apiServer = express();
 
 apiServer.use(express.json());
-apiServer.use(
-  cors({
-    origin: "https://6488ae95304b69007f07e988--greengovan.netlify.app/",
-  })
-);
 
 const apiRoute = require("../routes/api");
 

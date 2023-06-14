@@ -5,11 +5,11 @@ const jwt = require("jsonwebtoken");
 const database = require("../customModules/database");
 
 authServer.use(express.json());
-authServer.use(
-  cors({
-    origin: "http://localhost:19006",
-  })
-);
+// authServer.use(
+//   cors({
+//     origin: "http://localhost:19006",
+//   })
+// );
 
 // generates new access token
 function generateAccessToken(user) {
