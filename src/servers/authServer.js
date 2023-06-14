@@ -7,7 +7,11 @@ const database = require("../customModules/database");
 authServer.use(express.json());
 authServer.use(
   cors({
-    origin: ["https://greengovan.netlify.app", "http://localhost:19006"],
+    origin: [
+      "https://greengovan.netlify.app",
+      "https://greengovanclient.netlify.app",
+      "http://localhost:19006",
+    ],
   })
 );
 
