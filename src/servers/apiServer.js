@@ -1,7 +1,10 @@
 const express = require("express");
 const apiServer = express();
+const cors = require("cors");
 
 apiServer.use(express.json());
+
+apiServer.use(cors({ origin: "http://localhost:19006" }));
 
 const apiRoute = require("../routes/api");
 

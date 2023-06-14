@@ -3,10 +3,6 @@ const authServer = require("./src/servers/authServer");
 const apiServer = require("./src/servers/apiServer");
 const cors = require("cors");
 
-apiServer.use(cors());
-
-authServer.use(cors());
-
 dotenv.config();
 
 // ports

@@ -8,7 +8,6 @@ router.post("/", async (req, res) => {
     res.statusMessage = "No points given";
     return res.sendStatus(400);
   }
-  console.log(req.user);
   if (!req.user.userID) {
     res.statusMessage = "No userId given";
     return res.sendStatus(400);
